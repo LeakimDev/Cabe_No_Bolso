@@ -1,0 +1,219 @@
+=== TESTES - Cabe no bolso ===
+
+--- CASO DE REFERÊNCIA (passeio da turma) ---
+Entrada: Ana R$70 / Bruno R$60 / Carla R$70; Transporte fixa 90 (A,B,C); Almoço por pessoa 20 (A,B,C);
+         Atividade fixa 30 (A,C); Sobremesa por pessoa 10 (A,B,C)
+Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+  [OK    ] Custo total
+           esperado: R$ 210,00
+           obtido:   R$ 210,00
+  [OK    ] Total Ana
+           esperado: R$ 75,00
+           obtido:   R$ 75,00
+  [OK    ] Total Bruno
+           esperado: R$ 60,00
+           obtido:   R$ 60,00
+  [OK    ] Total Carla
+           esperado: R$ 75,00
+           obtido:   R$ 75,00
+  [OK    ] Ana excede em
+           esperado: R$ 5,00
+           obtido:   R$ 5,00
+  [OK    ] Carla excede em
+           esperado: R$ 5,00
+           obtido:   R$ 5,00
+  [OK    ] Bruno dentro do limite (total = orçamento)
+           esperado: true
+           obtido:   true
+  [OK    ] Rateio Atividade: Bruno não participa (0,00)
+           esperado: [15,00, 15,00]
+           obtido:   [15,00, 15,00]
+
+--- TESTE 1: Centavos no rateio ---
+Entrada: despesa fixa de R$ 100,00 para os códigos 1, 2 e 3
+  [OK    ] Código 1
+           esperado: R$ 33,34
+           obtido:   R$ 33,34
+  [OK    ] Código 2
+           esperado: R$ 33,33
+           obtido:   R$ 33,33
+  [OK    ] Código 3
+           esperado: R$ 33,33
+           obtido:   R$ 33,33
+  [OK    ] Soma
+           esperado: R$ 100,00
+           obtido:   R$ 100,00
+
+--- TESTE 2: Entrada ou vínculo inválido ---
+  [OK    ] Despesa sem participantes -> recusado: A despesa precisa ter pelo menos um participante.
+  [OK    ] Valor negativo -> recusado: O valor da despesa deve ser maior que zero.
+  [OK    ] Valor zero -> recusado: O valor da despesa deve ser maior que zero.
+  [OK    ] Descrição vazia -> recusado: A descrição da despesa não pode ser vazia.
+  [OK    ] Valor vazio -> recusado: O campo valor não pode ficar vazio.
+  [OK    ] Valor com letras -> recusado: Valor inválido em valor: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Participante não cadastrado no planejamento -> recusado: O participante Fantasma não está cadastrado neste planejamento.
+  [OK    ] Dados inalterados após todas as recusas
+           esperado: Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+           obtido:   Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+
+--- TESTE 3: Alteração de orçamento ---
+Entrada: orçamento de Ana alterado de R$ 70,00 para R$ 80,00
+  [OK    ] Custo de Ana continua
+           esperado: R$ 75,00
+           obtido:   R$ 75,00
+  [OK    ] Ana agora dentro do limite
+           esperado: true
+           obtido:   true
+
+--- TESTE 4: Exclusão de despesa ---
+Entrada: excluir "Atividade recreativa" do caso principal
+  [OK    ] Custo total
+           esperado: R$ 180,00
+           obtido:   R$ 180,00
+  [OK    ] Total de Ana
+           esperado: R$ 60,00
+           obtido:   R$ 60,00
+  [OK    ] Total de Bruno
+           esperado: R$ 60,00
+           obtido:   R$ 60,00
+  [OK    ] Total de Carla
+           esperado: R$ 60,00
+           obtido:   R$ 60,00
+
+--- TESTE 5: Salvar e reiniciar ---
+Entrada: salvar o caso principal, abrir um controlador novo (vazio) e carregar o arquivo
+  [OK    ] Planejamento novo começa vazio
+           esperado: 0 participantes, 0 despesas
+           obtido:   0 participantes, 0 despesas
+  [OK    ] Participantes (sem duplicar)
+           esperado: 3
+           obtido:   3
+  [OK    ] Despesas (sem duplicar)
+           esperado: 4
+           obtido:   4
+  [OK    ] Custo total
+           esperado: R$ 210,00
+           obtido:   R$ 210,00
+  [OK    ] Resultados idênticos ao original
+           esperado: Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+           obtido:   Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+  [OK    ] Vínculo: Atividade recreativa -> Ana e Carla
+           esperado: [Ana, Carla]
+           obtido:   [Ana, Carla]
+  [OK    ] Carregar 2x não duplica registros
+           esperado: 3 participantes, 4 despesas
+           obtido:   3 participantes, 4 despesas
+
+--- TESTE 6: Problema no arquivo ---
+Entrada: carregar arquivo inexistente
+  [OK    ] Mensagem clara para arquivo ausente
+           esperado: true
+           obtido:   true
+   mensagem exibida: Arquivo não encontrado: /tmp/…/nao-existe.dat
+Entrada: carregar arquivo com conteúdo inválido
+  [OK    ] Mensagem clara para arquivo inválido
+           esperado: true
+           obtido:   true
+   mensagem exibida: O arquivo está corrompido ou não é um planejamento válido.
+  [OK    ] Falha ao carregar preserva o planejamento em uso
+           esperado: Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+           obtido:   Ana=R$ 75,00/R$ 70,00 Bruno=R$ 60,00/R$ 60,00 Carla=R$ 75,00/R$ 70,00 | total=R$ 210,00
+  [OK    ] É possível iniciar um planejamento vazio
+           esperado: 0 participantes, 0 despesas
+           obtido:   0 participantes, 0 despesas
+
+
+=== TESTES EXTRAS (robustez) ===
+
+--- EXTRA: precisão decimal (0,10 + 0,20 contra orçamento 0,30) ---
+  [OK    ] Total = orçamento está DENTRO do limite
+           esperado: true
+           obtido:   true
+  [OK    ] Excedente
+           esperado: R$ 0,00
+           obtido:   R$ 0,00
+
+--- EXTRA: editar despesa com valor inválido não pode apagar a original ---
+  [OK    ] Editar Transporte para valor -1 -> recusado: O valor da despesa deve ser maior que zero.
+  [OK    ] Quantidade de despesas
+           esperado: 4
+           obtido:   4
+  [OK    ] Transporte continua na posição 0 com R$ 90,00
+           esperado: Transporte R$ 90,00
+           obtido:   Transporte R$ 90,00
+  [OK    ] Edição válida mantém a posição e atualiza o total
+           esperado: Transporte | R$ 240,00
+           obtido:   Transporte | R$ 240,00
+
+--- EXTRA: editar participante com orçamento inválido não pode mudar o nome ---
+  [OK    ] Editar Ana para 'NOVO NOME' com orçamento -5 -> recusado: O orçamento não pode ser negativo.
+  [OK    ] Nome continua
+           esperado: Ana
+           obtido:   Ana
+  [OK    ] Orçamento continua
+           esperado: R$ 70,00
+           obtido:   R$ 70,00
+
+--- EXTRA: código duplicado e remoção de participante com despesas ---
+  [OK    ] Cadastrar outro participante com código 1 -> recusado: Já existe um participante com o código 1.
+  [OK    ] Ana não foi sobrescrita
+           esperado: Ana
+           obtido:   Ana
+  [OK    ] Remover Ana (tem despesas vinculadas) -> recusado: Não é possível remover o participante enquanto houver despesas vinculadas a ele.
+
+--- EXTRA: textos que o Double.parseDouble aceitava e agora são recusados ---
+  [OK    ] Orçamento "NaN" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Orçamento "Infinity" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Orçamento "10d" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Orçamento "1e5" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Orçamento "10,999" -> recusado: O campo orçamento aceita no máximo 2 casas decimais.
+  [OK    ] Orçamento "1,2,3" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Orçamento "--5" -> recusado: Valor inválido em orçamento: use apenas números, com vírgula ou ponto nos centavos (ex.: 70,50).
+  [OK    ] Aceita vírgula
+           esperado: R$ 70,50
+           obtido:   R$ 70,50
+  [OK    ] Aceita ponto
+           esperado: R$ 70,50
+           obtido:   R$ 70,50
+  [OK    ] Aceita inteiro e 'R$'
+           esperado: R$ 70,00
+           obtido:   R$ 70,00
+
+--- EXTRA: o centavo que sobra vai para o MENOR código, mesmo com a lista fora de ordem ---
+  [OK    ] Código 1 recebe o centavo extra
+           esperado: R$ 33,34
+           obtido:   R$ 33,34
+  [OK    ] Código 2
+           esperado: R$ 33,33
+           obtido:   R$ 33,33
+  [OK    ] Código 3
+           esperado: R$ 33,33
+           obtido:   R$ 33,33
+
+--- EXTRA: o texto que a tela põe no campo ao editar deve poder ser salvo de volta (valores >= R$ 1.000) ---
+  [OK    ] Texto do campo de edição (sem separador de milhar)
+           esperado: 1500,00
+           obtido:   1500,00
+  [OK    ] Edição só do nome preserva o orçamento
+           esperado: Ana Maria R$ 1.500,00
+           obtido:   Ana Maria R$ 1.500,00
+  [OK    ] Ida e volta paraCampo -> parse (R$ 1.234.567,89)
+           esperado: 123456789
+           obtido:   123456789
+  [OK    ] Exibição continua com separador de milhar
+           esperado: R$ 1.234.567,89
+           obtido:   R$ 1.234.567,89
+
+--- EXTRA: demonstração do problema do double (motivo de usar centavos) ---
+  [OK    ] 0,1 + 0,2 em double
+           esperado: 0.30000000000000004
+           obtido:   0.30000000000000004
+  [OK    ] 0,1 + 0,2 em double é igual a 0,3?
+           esperado: false
+           obtido:   false
+  [OK    ] 10 + 20 centavos em long é igual a 30?
+           esperado: true
+           obtido:   true
+
+
+=== RESULTADO: 69/69 verificações OK ===

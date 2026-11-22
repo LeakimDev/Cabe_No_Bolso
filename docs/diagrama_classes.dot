@@ -1,0 +1,84 @@
+digraph G {
+  rankdir=TB; nodesep=0.45; ranksep=0.6; splines=ortho;
+  node [shape=plain, fontname="DejaVu Sans", fontsize=10];
+  edge [fontname="DejaVu Sans", fontsize=9];
+
+  Planejamento [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f0fe">
+   <tr><td><b>Planejamento</b></td></tr><hr/>
+   <tr><td align="left">- participantes : List&lt;Participante&gt;<br align="left"/>- despesas : List&lt;Despesa&gt;<br align="left"/></td></tr><hr/>
+   <tr><td align="left">+ adicionarParticipante(p)<br align="left"/>+ removerParticipante(p)<br align="left"/>+ adicionarDespesa(d)<br align="left"/>+ substituirDespesa(antiga, nova)<br align="left"/>+ removerDespesa(d)<br align="left"/>+ calcularCustoTotal() : long<br align="left"/>+ calcularTotaisIndividuais() : Map<br align="left"/>+ gerarResumo() : List&lt;ResumoParticipante&gt;<br align="left"/></td></tr></table>>];
+
+  Participante [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f0fe">
+   <tr><td><b>Participante</b></td></tr><hr/>
+   <tr><td align="left">- codigo : int {final}<br align="left"/>- nome : String<br align="left"/>- orcamento : long (centavos)<br align="left"/></td></tr><hr/>
+   <tr><td align="left">+ atualizar(nome, orcamento)<br align="left"/>+ compareTo(outro) : int<br align="left"/></td></tr></table>>];
+
+  Despesa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff4d6">
+   <tr><td><b><i>Despesa</i></b><br/>«abstract»</td></tr><hr/>
+   <tr><td align="left">- descricao : String<br align="left"/>- valorCentavos : long<br align="left"/>- participantes : List&lt;Participante&gt;<br align="left"/></td></tr><hr/>
+   <tr><td align="left"><i>+ calcularRateio() : Map&lt;Participante,Long&gt;</i><br align="left"/><i>+ calcularCustoTotal() : long</i><br align="left"/><i>+ getTipo() : TipoDespesa</i><br align="left"/></td></tr></table>>];
+
+  DespesaFixa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff4d6">
+   <tr><td><b>DespesaFixa</b></td></tr><hr/>
+   <tr><td align="left">+ calcularRateio()  «override»<br align="left"/>+ calcularCustoTotal()  «override»<br align="left"/>+ getTipo()  «override»<br align="left"/></td></tr></table>>];
+
+  DespesaPorPessoa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff4d6">
+   <tr><td><b>DespesaPorPessoa</b></td></tr><hr/>
+   <tr><td align="left">+ calcularRateio()  «override»<br align="left"/>+ calcularCustoTotal()  «override»<br align="left"/>+ getTipo()  «override»<br align="left"/></td></tr></table>>];
+
+  IPersistencia [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e6f6e6">
+   <tr><td><b>IPersistencia</b><br/>«interface»</td></tr><hr/>
+   <tr><td align="left">+ salvar(p, caminho)<br align="left"/>+ carregar(caminho) : Planejamento<br align="left"/></td></tr></table>>];
+
+  PersistenciaArquivo [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e6f6e6">
+   <tr><td><b>PersistenciaArquivo</b></td></tr><hr/>
+   <tr><td align="left">+ salvar(p, caminho)<br align="left"/>+ carregar(caminho) : Planejamento<br align="left"/></td></tr></table>>];
+
+  PlanejamentoControle [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fde8e8">
+   <tr><td><b>PlanejamentoControle</b></td></tr><hr/>
+   <tr><td align="left">- planejamento : Planejamento<br align="left"/>- persistencia : IPersistencia<br align="left"/></td></tr><hr/>
+   <tr><td align="left">+ adicionarParticipante(cod, nome, orc)<br align="left"/>+ editarParticipante(p, nome, orc)<br align="left"/>+ adicionarDespesa(tipo, desc, valor, parts)<br align="left"/>+ editarDespesa(antiga, tipo, ...)<br align="left"/>+ getResumo() / getCustoTotal()<br align="left"/>+ salvar(caminho) / carregar(caminho)<br align="left"/></td></tr></table>>];
+
+  TelaPrincipal [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fde8e8">
+   <tr><td><b>TelaPrincipal</b><br/>«JFrame (Swing)»</td></tr><hr/>
+   <tr><td align="left">- controle : PlanejamentoControle<br align="left"/></td></tr><hr/>
+   <tr><td align="left">- salvarParticipante() / salvarDespesa()<br align="left"/>- atualizarTodasTelas()<br align="left"/></td></tr></table>>];
+
+  ResumoParticipante [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f0fe">
+   <tr><td><b>ResumoParticipante</b></td></tr><hr/>
+   <tr><td align="left">- gasto : long<br align="left"/>- orcamento : long<br align="left"/></td></tr><hr/>
+   <tr><td align="left">+ isDentroDoOrcamento() : boolean<br align="left"/>+ getExcedente() : long<br align="left"/></td></tr></table>>];
+
+
+  TipoDespesa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff4d6">
+   <tr><td><b>TipoDespesa</b><br/>«enumeration»</td></tr><hr/>
+   <tr><td align="left">FIXA<br align="left"/>POR_PESSOA<br align="left"/></td></tr></table>>];
+
+  Dinheiro [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f0fe">
+   <tr><td><b>Dinheiro</b><br/>«utility»</td></tr><hr/>
+   <tr><td align="left">+ {static} parse(texto, campo) : long<br align="left"/>+ {static} formatar(centavos) : String<br align="left"/>+ {static} paraCampo(centavos) : String<br align="left"/></td></tr></table>>];
+
+  PersistenciaException [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e6f6e6">
+   <tr><td><b>PersistenciaException</b><br/>«exception»</td></tr></table>>];
+
+  // herança
+  DespesaFixa -> Despesa [arrowhead=empty];
+  DespesaPorPessoa -> Despesa [arrowhead=empty];
+  // realização
+  PersistenciaArquivo -> IPersistencia [arrowhead=empty, style=dashed];
+  // composição Planejamento
+  Planejamento -> Participante [arrowtail=diamond, dir=back, headlabel="  0..*  ", taillabel="1  "];
+  Planejamento -> Despesa [arrowtail=diamond, dir=back, headlabel="  0..*  ", taillabel="1  "];
+  // associação Despesa -> Participante
+  Despesa -> Participante [arrowhead=vee, headlabel="  1..*  ", label="  participa  "];
+  // controle
+  PlanejamentoControle -> Planejamento [arrowhead=vee, headlabel=" 1 "];
+  PlanejamentoControle -> IPersistencia [arrowhead=vee, headlabel=" 1 "];
+  TelaPrincipal -> PlanejamentoControle [arrowhead=vee, headlabel=" 1 "];
+  Planejamento -> ResumoParticipante [arrowhead=vee, style=dashed, label="  «create»  "];
+  Despesa -> TipoDespesa [arrowhead=vee, style=dashed, label="  usa  "];
+  PlanejamentoControle -> Dinheiro [arrowhead=vee, style=dashed, label="  usa  "];
+  IPersistencia -> PersistenciaException [arrowhead=vee, style=dashed, label="  «throws»  "];
+  TelaPrincipal -> PersistenciaArquivo [arrowhead=vee, style=dashed, label="  «create»  "];
+  {rank=same; TelaPrincipal; }
+}
