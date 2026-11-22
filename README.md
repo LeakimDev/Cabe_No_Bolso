@@ -12,13 +12,6 @@ Projeto da atividade final de **Programação Orientada a Objetos** (EAD Unifor)
 
 Na **raiz do projeto** (a pasta onde está este README):
 
-**Linux / macOS**
-```bash
-mkdir -p bin
-javac -encoding UTF-8 -d bin $(find src -name "*.java")
-java -cp bin cabenobolso.Main
-```
-
 **Windows (PowerShell)**
 ```powershell
 mkdir bin -Force
